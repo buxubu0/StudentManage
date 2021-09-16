@@ -1,0 +1,35 @@
+﻿@model StudentManage.ViewModels.YearViewModel.Details
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detail</h2>
+
+<div>
+    <h4>EditYear</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Year_Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Year_Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Year_Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Year_Name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Sửa", "Edit", new { Id = Model.ID}) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

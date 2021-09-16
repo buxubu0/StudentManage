@@ -1,0 +1,36 @@
+﻿@model StudentManage.ViewModels.KhoaViewModel.Details
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Detail</h2>
+
+<div>
+    <h4>Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Khoa_Code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Khoa_Code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Khoa_Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Khoa_Name)
+        </dd>
+
+    </dl>
+
+</div>
+<p>
+    @Html.ActionLink("Sửa", "Edit", new { Id = Model.ID}) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
