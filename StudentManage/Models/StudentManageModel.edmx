@@ -4,7 +4,18 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="StudentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="StudentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Class">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MaClass" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="NameClass" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TeacherID" Type="int" Nullable="false" />
+          <Property Name="Counts" Type="bit" />
+          <Property Name="SoLuongHS" Type="int" />
+        </EntityType>
         <EntityType Name="Khoa">
           <Key>
             <PropertyRef Name="ID" />
@@ -20,6 +31,14 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StudentID" Type="int" Nullable="false" />
           <Property Name="YearID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StudentOfClasss">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StudentID" Type="int" Nullable="false" />
+          <Property Name="ClassID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="StudentOfKhoa">
           <Key>
@@ -38,6 +57,7 @@
           <Property Name="FirstName" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="LastName" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="Address" Type="nvarchar" MaxLength="200" />
+          <Property Name="Status" Type="bit" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -49,6 +69,16 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="Teacher">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameTeacher" Type="nvarchar" MaxLength="50" />
+          <Property Name="Old" Type="int" />
+          <Property Name="Address" Type="nvarchar" MaxLength="100" />
+          <Property Name="Email" Type="nchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="Years">
           <Key>
             <PropertyRef Name="ID" />
@@ -57,6 +87,18 @@
           <Property Name="Year_Code" Type="nchar" MaxLength="5" Nullable="false" />
           <Property Name="Year_Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Class_Teacher">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="1" />
+          <End Role="Class" Type="Self.Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="TeacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_StudentJoinYear_Students">
           <End Role="Students" Type="Self.Students" Multiplicity="1" />
           <End Role="StudentJoinYear" Type="Self.StudentJoinYear" Multiplicity="*" />
@@ -78,6 +120,30 @@
             </Principal>
             <Dependent Role="StudentJoinYear">
               <PropertyRef Name="YearID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentOfClasss_Class">
+          <End Role="Class" Type="Self.Class" Multiplicity="1" />
+          <End Role="StudentOfClasss" Type="Self.StudentOfClasss" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Class">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentOfClasss">
+              <PropertyRef Name="ClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentOfClasss_Students">
+          <End Role="Students" Type="Self.Students" Multiplicity="1" />
+          <End Role="StudentOfClasss" Type="Self.StudentOfClasss" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Students">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentOfClasss">
+              <PropertyRef Name="StudentID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -106,12 +172,19 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="StudentModelStoreContainer">
+          <EntitySet Name="Class" EntityType="Self.Class" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Khoa" EntityType="Self.Khoa" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StudentJoinYear" EntityType="Self.StudentJoinYear" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentOfClasss" EntityType="Self.StudentOfClasss" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StudentOfKhoa" EntityType="Self.StudentOfKhoa" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Students" EntityType="Self.Students" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Teacher" EntityType="Self.Teacher" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Years" EntityType="Self.Years" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Class_Teacher" Association="Self.FK_Class_Teacher">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="Class" EntitySet="Class" />
+          </AssociationSet>
           <AssociationSet Name="FK_StudentJoinYear_Students" Association="Self.FK_StudentJoinYear_Students">
             <End Role="Students" EntitySet="Students" />
             <End Role="StudentJoinYear" EntitySet="StudentJoinYear" />
@@ -119,6 +192,14 @@
           <AssociationSet Name="FK_StudentJoinYear_Years" Association="Self.FK_StudentJoinYear_Years">
             <End Role="Years" EntitySet="Years" />
             <End Role="StudentJoinYear" EntitySet="StudentJoinYear" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentOfClasss_Class" Association="Self.FK_StudentOfClasss_Class">
+            <End Role="Class" EntitySet="Class" />
+            <End Role="StudentOfClasss" EntitySet="StudentOfClasss" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentOfClasss_Students" Association="Self.FK_StudentOfClasss_Students">
+            <End Role="Students" EntitySet="Students" />
+            <End Role="StudentOfClasss" EntitySet="StudentOfClasss" />
           </AssociationSet>
           <AssociationSet Name="FK_StudentOfKhoa_Khoa" Association="Self.FK_StudentOfKhoa_Khoa">
             <End Role="Khoa" EntitySet="Khoa" />
@@ -129,8 +210,7 @@
             <End Role="StudentOfKhoa" EntitySet="StudentOfKhoa" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="StudentModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -174,6 +254,8 @@
           <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="StudentJoinYears" Relationship="Self.FK_StudentJoinYear_Students" FromRole="Students" ToRole="StudentJoinYear" />
           <NavigationProperty Name="StudentOfKhoas" Relationship="Self.FK_StudentOfKhoa_Students" FromRole="Students" ToRole="StudentOfKhoa" />
+          <NavigationProperty Name="StudentOfClassses" Relationship="StudentModel.FK_StudentOfClasss_Students" FromRole="Student" ToRole="StudentOfClasss" />
+          <Property Name="Status" Type="Boolean" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -265,7 +347,92 @@
             <End Role="Students" EntitySet="Students" />
             <End Role="StudentOfKhoa" EntitySet="StudentOfKhoas" />
           </AssociationSet>
+          <EntitySet Name="Classes" EntityType="StudentModel.Class" />
+          <EntitySet Name="StudentOfClassses" EntityType="StudentModel.StudentOfClasss" />
+          <EntitySet Name="Teachers" EntityType="StudentModel.Teacher" />
+          <AssociationSet Name="FK_Class_Teacher" Association="StudentModel.FK_Class_Teacher">
+            <End Role="Teacher" EntitySet="Teachers" />
+            <End Role="Class" EntitySet="Classes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentOfClasss_Class" Association="StudentModel.FK_StudentOfClasss_Class">
+            <End Role="Class" EntitySet="Classes" />
+            <End Role="StudentOfClasss" EntitySet="StudentOfClassses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentOfClasss_Students" Association="StudentModel.FK_StudentOfClasss_Students">
+            <End Role="Student" EntitySet="Students" />
+            <End Role="StudentOfClasss" EntitySet="StudentOfClassses" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Class">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaClass" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="NameClass" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TeacherID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Teacher" Relationship="StudentModel.FK_Class_Teacher" FromRole="Class" ToRole="Teacher" />
+          <NavigationProperty Name="StudentOfClassses" Relationship="StudentModel.FK_StudentOfClasss_Class" FromRole="Class" ToRole="StudentOfClasss" />
+          <Property Name="Counts" Type="Boolean" />
+          <Property Name="SoLuongHS" Type="Int32" />
+        </EntityType>
+        <EntityType Name="StudentOfClasss">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StudentID" Type="Int32" Nullable="false" />
+          <Property Name="ClassID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Class" Relationship="StudentModel.FK_StudentOfClasss_Class" FromRole="StudentOfClasss" ToRole="Class" />
+          <NavigationProperty Name="Student" Relationship="StudentModel.FK_StudentOfClasss_Students" FromRole="StudentOfClasss" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="Teacher">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameTeacher" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Old" Type="Int32" />
+          <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="Classes" Relationship="StudentModel.FK_Class_Teacher" FromRole="Teacher" ToRole="Class" />
+        </EntityType>
+        <Association Name="FK_Class_Teacher">
+          <End Type="StudentModel.Teacher" Role="Teacher" Multiplicity="1" />
+          <End Type="StudentModel.Class" Role="Class" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Class">
+              <PropertyRef Name="TeacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentOfClasss_Class">
+          <End Type="StudentModel.Class" Role="Class" Multiplicity="1" />
+          <End Type="StudentModel.StudentOfClasss" Role="StudentOfClasss" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Class">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentOfClasss">
+              <PropertyRef Name="ClassID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentOfClasss_Students">
+          <End Type="StudentModel.Student" Role="Student" Multiplicity="1" />
+          <End Type="StudentModel.StudentOfClasss" Role="StudentOfClasss" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="StudentOfClasss">
+              <PropertyRef Name="StudentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -302,6 +469,7 @@
           <EntitySetMapping Name="Students">
             <EntityTypeMapping TypeName="StudentModel.Student">
               <MappingFragment StoreEntitySet="Students">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="MSSV" ColumnName="MSSV" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -327,6 +495,38 @@
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Year_Code" ColumnName="Year_Code" />
                 <ScalarProperty Name="Year_Name" ColumnName="Year_Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Classes">
+            <EntityTypeMapping TypeName="StudentModel.Class">
+              <MappingFragment StoreEntitySet="Class">
+                <ScalarProperty Name="SoLuongHS" ColumnName="SoLuongHS" />
+                <ScalarProperty Name="Counts" ColumnName="Counts" />
+                <ScalarProperty Name="TeacherID" ColumnName="TeacherID" />
+                <ScalarProperty Name="NameClass" ColumnName="NameClass" />
+                <ScalarProperty Name="MaClass" ColumnName="MaClass" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentOfClassses">
+            <EntityTypeMapping TypeName="StudentModel.StudentOfClasss">
+              <MappingFragment StoreEntitySet="StudentOfClasss">
+                <ScalarProperty Name="ClassID" ColumnName="ClassID" />
+                <ScalarProperty Name="StudentID" ColumnName="StudentID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teachers">
+            <EntityTypeMapping TypeName="StudentModel.Teacher">
+              <MappingFragment StoreEntitySet="Teacher">
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Old" ColumnName="Old" />
+                <ScalarProperty Name="NameTeacher" ColumnName="NameTeacher" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

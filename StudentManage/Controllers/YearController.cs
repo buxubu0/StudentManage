@@ -28,6 +28,11 @@ namespace StudentManage.Controllers
         [HttpPost]
         public ActionResult Create(CreateYear modelyear)
         {
+            if (yearService.CheckYearCode(modelyear.Year_Code))
+            {
+                ModelState.AddModelError("Year_Code", "Mã này đã tồn tại");
+                return View(modelyear);
+            };
             if (ModelState.IsValid)
             {
                 Year year = new Year()
@@ -46,7 +51,7 @@ namespace StudentManage.Controllers
         public ActionResult Edit(int Id)
         {
             Year year = yearService.GetByID(Id);
-            if(year is null)
+            if (year is null)
             {
                 return HttpNotFound();
             }
@@ -80,7 +85,7 @@ namespace StudentManage.Controllers
         public ActionResult Detail(int Id)
         {
             Year year = yearService.GetByID(Id);
-            if(year is null)
+            if (year is null)
             {
                 return HttpNotFound();
             }
@@ -110,14 +115,45 @@ namespace StudentManage.Controllers
         [HttpPost]
         public ActionResult Delete(int Id)
         {
+            string messenge = "";
+            bool success = default;
             Year year = yearService.GetByID(Id);
             if (year is null)
             {
-                return HttpNotFound();
+                messenge = "Id Bạn Tìm Không Tồn Tại";
+                success = false;
             }
-            yearService.Delete(year);
-            yearService.Save();
-            return RedirectToAction("Index");
+            if (year.StudentJoinYears.Count > 0)
+            {
+                messenge = "Không Thể Xóa Sinh Viên Đã Tồn Tại";
+                success = false;
+            }
+            else
+            {
+                messenge = "Xóa Thành Công !";
+                success = true;
+                yearService.Delete(year);
+                yearService.Save();
+            }
+
+            return Json(new { messenge = messenge, success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult DeleteYearCode(string yearCode)
+        {
+            string messenge = "";
+            bool success = default;
+           
+                messenge = "Xóa Thành Công !";
+                success = true;
+
+                yearService.DeleteYearCode(yearCode);
+           
+           
+
+            return Json(new { messenge = messenge, success = success }, JsonRequestBehavior.AllowGet);
         }
     }
 }

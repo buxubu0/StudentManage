@@ -1,0 +1,118 @@
+﻿@model StudentManage.ViewModels.StudentViewModels.EditStudents
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var trueStatus = Model.Status == true? "select" : string.Empty  ;
+    var falseStatus = Model.Status == false ? "select" : string.Empty;
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+<div class="form-horizontal">
+    <h4>EditStudents</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.ID)
+    <div class="form-group">
+        @Html.LabelFor(model => model.MSSV, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.MSSV, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.MSSV, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Chọn Khoa </label>
+        <select name="KhoaID" id="KhoaID" class="form-control">
+            <option selected> --- Vui Lòng Chọn Khoa ---</option>
+            @foreach (var itemKhoa in Model.Khoas)
+            {
+                var select = itemKhoa.ID == Model.KhoaID ? "selected" : string.Empty;
+                <option value="@itemKhoa.ID" @select>@itemKhoa.Khoa_Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Chọn Năm </label>
+        <select name="YearID" id="YearID" class="form-control">
+            <option selected> --- Vui Lòng Chọn Năm ---</option>
+            @foreach (var itemYear in Model.Years)
+            {
+                var select = itemYear.ID == Model.YearID ? "selected" : string.Empty;
+                <option value="@itemYear.ID" @select>@itemYear.Year_Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Chọn Lớp </label>
+        <select name="ClassID" id="ClassID" class="form-control">
+            <option selected> --- Vui Lòng Chọn Lớp ---</option>
+            @foreach (var itemClass in Model.Classes)
+            {
+                var select = itemClass.ID == Model.ClassID ? "selected" : string.Empty;
+                <option value="@itemClass.ID" @select>@itemClass.NameClass</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Chọn Trạng Thái </label>
+        <select name="Status" id="Status" class="form-control">
+            <option selected> --- Vui Lòng Chọn Trạng Thái ---</option>
+
+
+            <option value="true" @trueStatus>Còn Học</option>
+            <option value="false" @falseStatus>Nghỉ Học</option>
+
+        </select>
+    </div>
+    @Html.HiddenFor(model => model.ID)
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

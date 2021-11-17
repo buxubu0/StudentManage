@@ -15,6 +15,12 @@
         <AssociationConnector Association="StudentModel.FK_StudentJoinYear_Students" ManuallyRouted="false" />
         <AssociationConnector Association="StudentModel.FK_StudentJoinYear_Years" ManuallyRouted="false" />
         <AssociationConnector Association="StudentModel.FK_StudentOfKhoa_Students" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="StudentModel.Class" Width="1.5" PointX="0.875" PointY="6.875" />
+        <EntityTypeShape EntityType="StudentModel.StudentOfClasss" Width="1.5" PointX="3.125" PointY="6.875" />
+        <EntityTypeShape EntityType="StudentModel.Teacher" Width="1.5" PointX="0.875" PointY="9.875" />
+        <AssociationConnector Association="StudentModel.FK_Class_Teacher" />
+        <AssociationConnector Association="StudentModel.FK_StudentOfClasss_Class" />
+        <AssociationConnector Association="StudentModel.FK_StudentOfClasss_Students" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

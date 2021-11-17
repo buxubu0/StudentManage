@@ -34,6 +34,11 @@ namespace StudentManage.Controllers
         [HttpPost]
         public ActionResult Create(CreateKhoa model)
         {
+            if (khoaService.CheckCode(model.Khoa_Code))
+            {
+                ModelState.AddModelError("Khoa_Code", "Mã này đã tồn tại");
+                return View(model);
+            }
             if (ModelState.IsValid)
             {
                 Khoa khoa = new Khoa()
@@ -87,7 +92,7 @@ namespace StudentManage.Controllers
         public ActionResult Detail(int Id)
         {
             Khoa khoa = khoaService.GetByID(Id);
-            if(khoa is null)
+            if (khoa is null)
             {
                 return HttpNotFound();
             }
@@ -100,19 +105,63 @@ namespace StudentManage.Controllers
             return View(deKhoa);
         }
 
+        //[HttpPost]
+        //public ActionResult Delete(int Id)
+        //{
+        //    Khoa khoa = khoaService.GetByID(Id);
+        //    if(khoa is null)
+        //    {
+        //        return HttpNotFound();
+        //    };
+        //    khoaService.Delete(khoa);
+        //    khoaService.Save();
+        //    return RedirectToAction("Index");
+        //}
+
+
+        //ajax
         [HttpPost]
         public ActionResult Delete(int Id)
         {
+            string messenger = "";
+            bool success = false;
             Khoa khoa = khoaService.GetByID(Id);
-            if(khoa is null)
+            if (khoa is null)
             {
-                return HttpNotFound();
-            };
-            khoaService.Delete(khoa);
-            khoaService.Save();
-            return RedirectToAction("Index");
+                messenger = "Id không tồn tại";
+                success = false;
+            }
+            if (khoa.StudentOfKhoas.Count > 0)
+            {
+                messenger = "Sinh Viên Này Đã Tồn Tại";
+                success = false;
+            }
+            else
+            {
+                khoaService.Delete(khoa);
+                khoaService.Save();
+                messenger = "Xóa Thành Công";
+                success = true;
+            }
+            return Json(new { messenger = messenger, success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteKhoaCode(string khoaCode)
+        {
+            string messenger = "";
+            bool success = false;
+            
+         
+            
+                khoaService.DeleteKhoaCode(khoaCode);
+
+                messenger = "Xóa Thành Công";
+                success = true;
+            
+            return Json(new { messenger = messenger, success = success }, JsonRequestBehavior.AllowGet);
         }
 
     }
 
-    }
+}

@@ -1,12 +1,36 @@
-﻿@model IEnumerable<StudentManage.ViewModels.GetAllStudents>
+﻿
+@model IEnumerable<StudentManage.ViewModels.GetAllStudents>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>Danh Sach Sinh Vien</h2>
+<a href="/Student/Create" class="btn btn-info">Thêm Sinh Viên</a>
+
+@using (Html.BeginForm("Search", "Student", FormMethod.Post))
+{
+    <form>
+        <div>
+            Find Name:<br>
+            <input type="text" id="nameToFind">
+
+            <input type="button" id="submitId" value="submit" />
+
+        </div>
+    </form>
+}
+
+@{
+    if (ViewBag.SearchKey != null)
+    {
+        <span>
+            Search Key: @ViewBag.SearchKey
+        </span>
+    }
+}
 
 <style>
-    #bot{
+    #bot {
         margin-bottom: 20px;
     }
 </style>
@@ -16,12 +40,14 @@
 <table class="table table-dark table-striped" id="bot">
     <thead>
         <tr>
-           
+
             <th style="width: 10%"> MSSV </th>
-            <th style="width: 20%"> First Name </th>
+            <th style="width: 10%"> First Name </th>
             <th style="width: 10%"> Last Name </th>
             <th style="width: 20%"> Khoa </th>
-            <th style="width: 15%"> Nam Hoc </th>
+            <th style="width: 10%"> Nam Hoc </th>
+            <th style="width: 10%"> Lớp Học </th>
+            <th style="width: 10%"> Trang Thai </th>
             <th style="width: 20%"> Action </th>
 
         </tr>
@@ -32,16 +58,26 @@
             foreach (var stu in Model)
             {
                 <tr>
-                   
+
                     <td>@stu.MSSV</td>
                     <td>@stu.FirstName</td>
                     <td>@stu.LastName</td>
                     <td>@stu.Khoa</td>
                     <td>@stu.Nam</td>
+                    <td>@stu.Class</td>
+                    @if (stu.Status)
+                    {
+                        <td>Con Hoc</td>
+                    }
+                    else
+                    {
+                        <td>Nghi Hoc</td>
+                    }
                     <td>
-                        <button class="btn btn-success">Edit</button>
-                        <button class="btn btn-info">Delete</button>
-                        <button class="btn btn-danger">Save</button>
+                        <a class="btn btn-info" href="/Student/Edit/@stu.ID">Sửa</a>
+                        <a class="btn btn-warning" href="/Student/Detail/@stu.ID">Chi Tiết</a>
+                        <button class="btn btn-danger btnDelete" data-id="@stu.ID">Xóa ID</button>
+                        <button class="btn btn-success btnDelete1" data-string="@stu.MSSV">Xóa MSSV</button>
                     </td>
                 </tr>
             }
@@ -49,4 +85,64 @@
     </tbody>
 
 </table>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('.btnDelete').click(function () {
+            var id = $(this).attr("data-id");
+            var tb = confirm("Bạn có muốn xóa");
+            if (tb) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Delete", "Student")",
+                    data: {
+                        Id: id
+                    }
+                }).done(function (reponse) {
+                    if (reponse.success) {
+                        alert(reponse.messenge);
+                        location.reload();
+                    }
+                       // else {
+                    //    alert(reponse.messenge);
+                    //}
+
+                }).fail(function () {
+                    alert("ERROR, Vui lòng quay lại sau")
+                })
+            }
+
+        });
+
+
+         $('.btnDelete1').click(function () {
+            var mssvS = $(this).attr("data-string");
+            var tb = confirm("Bạn có muốn xóa");
+            if (tb) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("DeleteMSSV", "Student")",
+                    data: {
+                        mssv: mssvS
+                    }
+                }).done(function (reponse) {
+                    if (reponse.success1) {
+                        alert(reponse.messenge1);
+                        location.reload();
+                    }
+                       // else {
+                    //    alert(reponse.messenge);
+                    //}
+
+                }).fail(function () {
+                    alert("ERROR, Vui lòng quay lại sau")
+                })
+            }
+
+        });
+
+
+    </script>
+}
+
 

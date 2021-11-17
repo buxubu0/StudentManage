@@ -12,27 +12,22 @@ namespace StudentManage.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Student
+    public partial class Class
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Student()
+        public Class()
         {
-            this.StudentJoinYears = new HashSet<StudentJoinYear>();
-            this.StudentOfKhoas = new HashSet<StudentOfKhoa>();
             this.StudentOfClassses = new HashSet<StudentOfClasss>();
         }
     
         public int ID { get; set; }
-        public string MSSV { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Address { get; set; }
-        public Nullable<bool> Status { get; set; }
+        public string MaClass { get; set; }
+        public string NameClass { get; set; }
+        public int TeacherID { get; set; }
+        public Nullable<bool> Counts { get; set; }
+        public Nullable<int> SoLuongHS { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StudentJoinYear> StudentJoinYears { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StudentOfKhoa> StudentOfKhoas { get; set; }
+        public virtual Teacher Teacher { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<StudentOfClasss> StudentOfClassses { get; set; }
     }

@@ -13,6 +13,10 @@ namespace StudentManage.ViewModels
         public string LastName { get; set; }
         public string Khoa { get; set; }
         public string Nam { get; set; }
+        public string Class { get; set; }
+        public string Teachers { get; set; }
+        public bool Status { get; set; }
+        public bool Count { get; set; }
      
     }
 }

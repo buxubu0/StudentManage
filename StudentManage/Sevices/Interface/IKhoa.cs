@@ -16,5 +16,7 @@ namespace StudentManage.Sevices.Interface
         void Delete(Khoa khoa);
         void Update(Khoa khoa);
         void Save();
+        bool CheckCode(string code);
+        void DeleteKhoaCode(string khoaCode);
     }
 }

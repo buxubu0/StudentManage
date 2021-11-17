@@ -31,5 +31,8 @@ namespace StudentManage.Models
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Year> Years { get; set; }
+        public virtual DbSet<Class> Classes { get; set; }
+        public virtual DbSet<StudentOfClasss> StudentOfClassses { get; set; }
+        public virtual DbSet<Teacher> Teachers { get; set; }
     }
 }

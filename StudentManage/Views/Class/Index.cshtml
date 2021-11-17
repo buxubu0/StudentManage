@@ -1,0 +1,75 @@
+﻿@model IEnumerable<StudentManage.Models.Class>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <h2>Danh Sách Lớp</h2>
+    <a class="btn btn-success" href="/Class/Create">Thêm Lớp</a>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th style="width: 10%">Mã Lớp</th>
+                <th style="width: 20%">Tên Lớp</th>
+                <th style="width: 20%">GVCN</th>
+                <th style="width: 50%">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (Model.Count() >= 0)
+            {
+                foreach (var itemc in Model)
+                {
+                    <tr>
+                        <td> @itemc.MaClass</td>
+                        <td>@itemc.NameClass</td>
+                        <td>@itemc.Teacher.NameTeacher</td>
+                        <td>
+                            <a class="btn btn-info" href="Class/Edit/@itemc.ID">Sửa</a>
+                            <a class="btn btn-warning" href="Class/Detail/@itemc.ID">Chi Tiết</a>
+                            <a class="btn btn-danger btnDlete" data-id="@itemc.ID" >Xóa</a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+
+@section Scripts{
+    <script type="text/javascript">
+        $('.btnDlete').click(function () {
+            var id = $(this).attr("data-id");
+            var tb = confirm("Bạn có chắc muốn xóa");
+            if (tb) {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Delete","Class")",
+                    data: {
+                        Id: id
+                    }
+
+                }).done(function (reponse) {
+                    if (reponse.suc) {
+                        alert(reponse.mess);
+                        location.reload();
+                    } else {
+                        alert(reponse.mess);
+                    }
+                }).fail(function () {
+                    alert("ERROR, Vui lòng quay lại sau")
+                })
+            } 
+        });
+    </script>
+}
+
